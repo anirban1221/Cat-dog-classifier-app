@@ -39,6 +39,7 @@ st.header('This is a Cat-Dog Classification App')
 st.subheader('Upload an image of a cat or dog and test the limits of AI')
 
 uploaded_file = st.file_uploader('Upload an image', type=["jpg", "jpeg", "png"])
+col1,col2=st.columns([0.7, 0.3],gap='small')
 
 if uploaded_file is not None:
     # Load the image
@@ -48,7 +49,8 @@ if uploaded_file is not None:
 
     img = cv2.imread(temp_file_path)
     # Display the uploaded image
-    st.image(img, caption='Uploaded Image', use_container_width=False, width=400)
+    with col1:
+        st.image(img, caption='Uploaded Image', use_container_width=False, width=400)
     
     # Preprocess the image for the model
     test_input = preprocess_image(img)
@@ -60,10 +62,11 @@ if uploaded_file is not None:
     prediction = predict_with_tflite(interpreter, test_input)
 
     # Interpret the prediction
-    if prediction[0][0] < 0.5:
-        st.header("This is a Cat")
-    else:
-        st.header("This is a Dog")
+    with col2:
+        if prediction[0][0] < 0.5:
+            st.header("This is a - Cat")
+        else:
+            st.header("This is a - Dog")
 
     # Remove the temporary image file
     os.remove(temp_file_path)
